@@ -1,14 +1,3 @@
-/*
- * LeetCode problem 1. Two Sum
-
- * Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
- * You may assume that each input would have exactly one solution, and you may not use the same element twice.
- * You can return the answer in any order.
-
- * https://leetcode.com/problems/two-sum/description/
-
- */
-
 class Solution {
     public int[] twoSum(int[] nums, int target) {
         Map<Integer, Integer> map = new HashMap<>();
@@ -55,7 +44,3 @@ class Solution {
     }
 }
 
-// Runtime: 0 ms (top 0.00% LOL)
-// Time Complexity: O(N^2)
-// Memory: 46.20 MB (top 87.25%)
-// Space Complexity: 
