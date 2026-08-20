@@ -43,4 +43,3 @@ class Solution {
         System.out.println("Example 4: [" + result4[0] + "," + result4[1] + "]"); // Expected: [0,2]
     }
 }
-
