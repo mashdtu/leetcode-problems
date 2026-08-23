@@ -2,3 +2,6 @@
 Makefile
 main
 *.class
+*.fsproj
+obj
+bin
