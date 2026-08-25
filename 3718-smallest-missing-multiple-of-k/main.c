@@ -67,8 +67,8 @@ int main(int argc, char const *argv[])
     int nums3[] = {42, 13, 99, 13, 71, 32, 64, 32, 63, 44, 6, 22, 8, 2, 55, 88, 43, 40, 71, 80, 95, 32, 46, 19};
     printf("%d %d\n", missingMultipleSlow(nums3, 24, 44), missingMultipleFast((int[]){42, 13, 99, 13, 71, 32, 64, 32, 63, 44, 6, 22, 8, 2, 55, 88, 43, 40, 71, 80, 95, 32, 46, 19}, 24, 44)); // expected: 132
 
-    // benchmark with 10000 elements, 1000 iterations each
-    int n = 10000;
+    // benchmark with 100 elements, 50,000 iterations each
+    int n = 100;
     int *big = malloc(n * sizeof(int));
     srand(42);
     for (int i = 0; i < n; i++)
@@ -77,13 +77,13 @@ int main(int argc, char const *argv[])
     memcpy(bigCopy, big, n * sizeof(int));
 
     clock_t t1 = clock();
-    for (int r = 0; r < 1000; r++)
+    for (int r = 0; r < 50000; r++)
     {
         memcpy(big, bigCopy, n * sizeof(int));
         missingMultipleSlow(big, n, 7);
     }
     clock_t t2 = clock();
-    for (int r = 0; r < 1000; r++)
+    for (int r = 0; r < 50000; r++)
         missingMultipleFast(bigCopy, n, 7);
     clock_t t3 = clock();
 
