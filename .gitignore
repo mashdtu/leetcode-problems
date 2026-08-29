@@ -6,3 +6,5 @@ main
 obj
 bin
 *.o
+test.c
+test
