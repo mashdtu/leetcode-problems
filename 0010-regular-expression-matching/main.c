@@ -56,13 +56,42 @@ NFA emptyNFA(void)
 
 NFA addLiteral(char literal)
 {
+    // create empty NFA fragment
+
+    // add edge with literal rule
+
+    // set literal rule to_state as NFA accept state
+
+    // return NFA fragment
 }
 NFA addWildcard(void)
 {
+    // create empty NFA fragment
+
+    // add edge with epsilon transition
+
+    // set literal rule to_state as NFA accept state
+
+    // return NFA fragment
 }
+
 NFA addKleeneClosure(NFA fragment)
 {
+    // modify previous fragment following thompsons construction algorithm
+
+    // set new start state
+
+    // add epsilon transition from new start state to old start state
+
+    // set new end state
+
+    // add epsilon transition from old end state to new end state
+
+    // add epsilon transition from old end state to old start state
+
+    // return altered NFA fragment
 }
+
 NFA concatenate(NFA left, NFA right)
 {
 }
