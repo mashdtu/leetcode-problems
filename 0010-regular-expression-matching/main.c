@@ -44,6 +44,14 @@ bool isActiveState(uint64_t activeStates, uint8_t s)
 
 NFA emptyNFA(void)
 {
+    NFA n;
+    n.start_state = 0;
+    n.accept_state = 0;
+    n.state_count = 1;
+    n.edges = NULL;
+    n.edge_count = 0;
+    n.active_states = 0b00000001;
+    return n;
 }
 
 NFA addLiteral(char literal)
