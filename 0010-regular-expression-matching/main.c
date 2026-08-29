@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 typedef enum
 {
+    TRANSITION_NONE,
     TRANSITION_LITERAL,
     TRANSITION_WILDCARD,
     TRANSITION_EPSILON
@@ -42,6 +44,16 @@ bool isActiveState(uint64_t activeStates, uint8_t s)
     return (activeStates & (UINT64_C(1) << s)) != 0;
 }
 
+Edge emptyEdge(void)
+{
+    Edge e;
+    e.from_state = 0;
+    e.to_state = 0;
+    e.literal = '\0';
+    e.type = TRANSITION_NONE;
+    return e;
+}
+
 NFA emptyNFA(void)
 {
     NFA n;
@@ -54,9 +66,44 @@ NFA emptyNFA(void)
     return n;
 }
 
+NFA addEdge(NFA n, uint16_t from_state, uint16_t to_state, TransitionType type, char rule)
+{
+    uint16_t largestState = from_state > to_state ? from_state : to_state;
+    if (largestState >= 64)
+    {
+        fprintf(stderr, "State index exceeds bitset capacity\n");
+        free(n.edges);
+        exit(EXIT_FAILURE);
+    }
+
+    if (largestState >= n.state_count)
+        n.state_count = largestState + 1;
+
+    Edge e = emptyEdge();
+    e.from_state = from_state;
+    e.to_state = to_state;
+    e.type = type;
+    e.literal = (type == TRANSITION_LITERAL) ? rule : '\0';
+
+    Edge *resized = realloc(n.edges, (n.edge_count + 1) * sizeof(Edge));
+    if (resized == NULL)
+    {
+        fprintf(stderr, "Memory allocation failed\n");
+        free(n.edges);
+        exit(EXIT_FAILURE);
+    }
+
+    n.edges = resized;
+    n.edges[n.edge_count] = e;
+    n.edge_count++;
+
+    return n;
+}
+
 NFA addLiteral(char literal)
 {
     // create empty NFA fragment
+    NFA fragment = emptyNFA();
 
     // add edge with literal rule
 
