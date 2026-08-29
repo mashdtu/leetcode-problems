@@ -106,20 +106,28 @@ NFA addLiteral(char literal)
     NFA fragment = emptyNFA();
 
     // add edge with literal rule
+    fragment = addEdge(fragment, 0, 1, TRANSITION_LITERAL, literal);
 
-    // set literal rule to_state as NFA accept state
+    // set edge to_state as NFA accept state
+    fragment.accept_state = 1;
 
     // return NFA fragment
+    return fragment;
 }
+
 NFA addWildcard(void)
 {
     // create empty NFA fragment
+    NFA fragment = emptyNFA();
 
     // add edge with epsilon transition
+    fragment = addEdge(fragment, 0, 1, TRANSITION_WILDCARD, '\0');
 
-    // set literal rule to_state as NFA accept state
+    // set edge to_state as NFA accept state
+    fragment.accept_state = 1;
 
     // return NFA fragment
+    return fragment;
 }
 
 NFA addKleeneClosure(NFA fragment)
