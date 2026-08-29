@@ -132,19 +132,29 @@ NFA addWildcard(void)
 
 NFA addKleeneClosure(NFA fragment)
 {
-    // modify previous fragment following thompsons construction algorithm
+    // store new state numbers
+    uint16_t oldStart = fragment.start_state + 1;
+    uint16_t oldAccept = fragment.accept_state + 1;
+    uint16_t newAccept = fragment.state_count + 1;
 
-    // set new start state
+    // set new state numbers to fit the new first state
+    fragment.start_state = 0;
+    fragment.accept_state = newAccept;
+    fragment.state_count += 2;
+    for (size_t i = 0; i < fragment.edge_count; i++)
+    {
+        fragment.edges[i].from_state++;
+        fragment.edges[i].to_state++;
+    }
 
-    // add epsilon transition from new start state to old start state
-
-    // set new end state
-
-    // add epsilon transition from old end state to new end state
-
-    // add epsilon transition from old end state to old start state
+    // add epsilon transitions following thompsons construction algorithm
+    fragment = addEdge(fragment, 0, oldStart, TRANSITION_EPSILON, '\0');
+    fragment = addEdge(fragment, 0, newAccept, TRANSITION_EPSILON, '\0');
+    fragment = addEdge(fragment, oldAccept, oldStart, TRANSITION_EPSILON, '\0');
+    fragment = addEdge(fragment, oldAccept, newAccept, TRANSITION_EPSILON, '\0');
 
     // return altered NFA fragment
+    return fragment;
 }
 
 NFA concatenate(NFA left, NFA right)
