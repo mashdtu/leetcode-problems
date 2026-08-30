@@ -159,6 +159,65 @@ NFA addKleeneClosure(NFA fragment)
 
 NFA concatenate(NFA left, NFA right)
 {
+    if (left.edge_count == 0)
+        return right;
+
+    if (right.edge_count == 0)
+        return left;
+
+    if (left.state_count + right.state_count > 64)
+    {
+        fprintf(stderr, "Concatenated NFA is too large\n");
+        free(left.edges);
+        free(right.edges);
+        exit(EXIT_FAILURE);
+    }
+
+    // store original left edge count and final edge count
+    uint16_t oldLeftEdgeCount = left.edge_count;
+    uint16_t finalEdgeCount = left.edge_count + right.edge_count + 1;
+
+    // shift all states in right by left state count
+    right.start_state += left.state_count;
+    right.accept_state += left.state_count;
+    for (size_t i = 0; i < right.edge_count; i++)
+    {
+        right.edges[i].from_state += left.state_count;
+        right.edges[i].to_state += left.state_count;
+    }
+
+    // realloc left edges to fit all left and right edges + connecting epsilon transition
+    Edge *resized = realloc(left.edges, finalEdgeCount * sizeof(Edge));
+    if (resized == NULL)
+    {
+        fprintf(stderr, "Memory allocation failed\n");
+        free(left.edges);
+        free(right.edges);
+        exit(EXIT_FAILURE);
+    }
+    left.edges = resized;
+
+    // create epsilon transition from left accept to right start
+    Edge connection = emptyEdge();
+    connection.from_state = left.accept_state;
+    connection.to_state = right.start_state;
+    connection.type = TRANSITION_EPSILON;
+    left.edges[oldLeftEdgeCount] = connection;
+
+    // copy shifted edges from right to left
+    left.edge_count = finalEdgeCount;
+    for (size_t i = 0; i < right.edge_count; i++)
+        left.edges[oldLeftEdgeCount + 1 + i] = right.edges[i];
+
+    // set left accept state to right accept
+    left.accept_state = right.accept_state;
+
+    // add state counts together
+    left.state_count += right.state_count;
+
+    // free allocated memory and return left NFA
+    free(right.edges);
+    return left;
 }
 
 NFA regexToNFA(char *p)
