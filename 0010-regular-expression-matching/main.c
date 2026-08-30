@@ -284,6 +284,13 @@ bool isMatch(char *s, char *p)
         // simulate transitions on n
         active_states = simulateNonEpsilonTransitions(active_states, n, s[i]);
         active_states = simulateEpsilonTransitions(active_states, n);
+
+        // if all states are deactivated return false
+        if (!active_states)
+        {
+            free(n.edges);
+            return false;
+        }
     }
 
     // return true if accepting state is active
