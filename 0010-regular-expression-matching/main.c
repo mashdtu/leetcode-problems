@@ -238,13 +238,30 @@ NFA regexToNFA(char *p)
     return n;
 }
 
+uint64_t simulateEpsilonTransitions(uint64_t active_states, NFA n)
+{
+    uint64_t previous;
+    do
+    {
+        previous = active_states;
+        for (size_t i = 0; i < n.edge_count; i++)
+            if (n.edges[i].type == TRANSITION_EPSILON && isActiveState(active_states, n.edges[i].from_state))
+                active_states = activateState(active_states, n.edges[i].to_state);
+    } while (active_states != previous);
+    return active_states;
+}
+
 bool isMatch(char *s, char *p)
 {
     // convert regex pattern p to NFA n
     NFA n = regexToNFA(p);
 
-    // simulate NFA n
-    
+    // define active states for NFA n
+    uint64_t active_states = 0;
+    active_states = activateState(active_states, n.start_state);
+
+    // simulate epsilon transitions on n
+    active_states = simulateEpsilonTransitions(active_states, n);
 }
 
 int main(int argc, char const *argv[])
