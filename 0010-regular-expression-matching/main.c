@@ -26,7 +26,6 @@ typedef struct
     uint16_t state_count;
     Edge *edges;
     uint16_t edge_count;
-    uint64_t active_states;
 } NFA;
 
 uint64_t activateState(uint64_t activeStates, uint8_t s)
@@ -62,7 +61,6 @@ NFA emptyNFA(void)
     n.state_count = 1;
     n.edges = NULL;
     n.edge_count = 0;
-    n.active_states = 0b00000001;
     return n;
 }
 
@@ -242,8 +240,11 @@ NFA regexToNFA(char *p)
 
 bool isMatch(char *s, char *p)
 {
-    uint64_t activeStates = 0;
-    NFA nfa = regexToNFA(p);
+    // convert regex pattern p to NFA n
+    NFA n = regexToNFA(p);
+
+    // simulate NFA n
+    
 }
 
 int main(int argc, char const *argv[])
