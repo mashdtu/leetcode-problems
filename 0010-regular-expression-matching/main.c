@@ -232,10 +232,8 @@ NFA regexToNFA(char *p)
             fragment = addKleeneClosure(fragment);
             i++;
         }
-
         n = concatenate(n, fragment);
     }
-
     return n;
 }
 
@@ -283,10 +281,8 @@ bool isMatch(char *s, char *p)
     int s_len = strlen(s);
     for (size_t i = 0; i < s_len; i++)
     {
-        // simulate non-epsilon transitions on n
+        // simulate transitions on n
         active_states = simulateNonEpsilonTransitions(active_states, n, s[i]);
-
-        // simulate epsilon transitions on n
         active_states = simulateEpsilonTransitions(active_states, n);
     }
 
