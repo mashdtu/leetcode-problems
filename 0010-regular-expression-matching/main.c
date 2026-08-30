@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef enum
 {
@@ -251,6 +252,10 @@ uint64_t simulateEpsilonTransitions(uint64_t active_states, NFA n)
     return active_states;
 }
 
+uint64_t simulateNonEpsilonTransitions(uint64_t active_states, NFA n, char c)
+{
+}
+
 bool isMatch(char *s, char *p)
 {
     // convert regex pattern p to NFA n
@@ -260,8 +265,24 @@ bool isMatch(char *s, char *p)
     uint64_t active_states = 0;
     active_states = activateState(active_states, n.start_state);
 
-    // simulate epsilon transitions on n
+    // simulate initial epsilon transitions on n
     active_states = simulateEpsilonTransitions(active_states, n);
+
+    // loop simulation across string s
+    int s_len = strlen(s);
+    for (size_t i = 0; i < s_len; i++)
+    {
+        // simulate non-epsilon transitions on n
+        active_states = simulateNonEpsilonTransitions(active_states, n, s[i]);
+
+        // simulate epsilon transitions on n
+        active_states = simulateEpsilonTransitions(active_states, n);
+    }
+
+    // return true if accepting state is active
+    bool matched = isActiveState(active_states, n.accept_state);
+    free(n.edges);
+    return matched;
 }
 
 int main(int argc, char const *argv[])
