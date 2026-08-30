@@ -254,6 +254,17 @@ uint64_t simulateEpsilonTransitions(uint64_t active_states, NFA n)
 
 uint64_t simulateNonEpsilonTransitions(uint64_t active_states, NFA n, char c)
 {
+    uint64_t result_states = 0;
+    for (size_t i = 0; i < n.edge_count; i++)
+    {
+        bool matches =
+            n.edges[i].type == TRANSITION_WILDCARD ||
+            (n.edges[i].type == TRANSITION_LITERAL && n.edges[i].literal == c);
+
+        if (matches && isActiveState(active_states, n.edges[i].from_state))
+            result_states = activateState(result_states, n.edges[i].to_state);
+    }
+    return result_states;
 }
 
 bool isMatch(char *s, char *p)
